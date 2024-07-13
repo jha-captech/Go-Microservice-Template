@@ -6,7 +6,7 @@ A microservice template for Go
 ## Requirments
 - Utilize idiomatic Go and Industry best practices
   - Limited and judicious use of 3rd party libraries
-  - 
+  - propper error handling
 - Include resources for the full lifecycle:
   - Local setup instructions
   - Testing
