@@ -53,8 +53,8 @@ type responseID struct {
 }
 
 type responseErr struct {
-	Error            string            `json:"error,omitempty"`
-	ValidationErrors map[string]string `json:"validation_errors,omitempty"`
+	Error            string    `json:"error,omitempty"`
+	ValidationErrors []problem `json:"validation_errors,omitempty"`
 }
 
 // encodeResponse encodes data as a JSON response.

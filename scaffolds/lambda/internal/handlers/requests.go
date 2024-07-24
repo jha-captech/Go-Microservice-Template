@@ -7,24 +7,11 @@ import (
 	"github.com/captechconsulting/go-microservice-templates/lambda/internal/model"
 )
 
-type Validator interface {
-	Valid() (problems map[string]string)
-}
-
-type Mapper[T any] interface {
-	MapTo() (T, error)
-}
-
-type ValidatorMapper[T any] interface {
-	Validator
-	Mapper[T]
-}
-
 type inputUser struct {
-	FirstName string `json:"first_name,omitempty"`
-	LastName  string `json:"last_name,omitempty"`
-	Role      string `json:"role,omitempty"`
-	UserID    int    `json:"user_id,omitempty"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Role      string `json:"role"`
+	UserID    int    `json:"user_id"`
 }
 
 func (user inputUser) MapTo() (model.User, error) {
@@ -37,23 +24,68 @@ func (user inputUser) MapTo() (model.User, error) {
 	}, nil
 }
 
-func (user inputUser) Valid() map[string]string {
-	problems := make(map[string]string)
+func (user inputUser) Valid() []problem {
+	var problems []problem
+
+	// validate FirstName is not blank
+	if user.FirstName == "" {
+		problems = append(problems, problem{
+			Name:        "first_name",
+			Description: "must not be blank",
+		})
+	}
+
+	// validate LastName is not blank
+	if user.LastName == "" {
+		problems = append(problems, problem{
+			Name:        "last_name",
+			Description: "must not be blank",
+		})
+	}
+
+	// validate role is not blank and is `Customer` or `Employee`
+	if user.Role == "" {
+		problems = append(problems, problem{
+			Name:        "role",
+			Description: "must not be blank",
+		})
+	} else if user.Role != "Customer" && user.Role != "Employee" {
+		problems = append(problems, problem{
+			Name:        "role",
+			Description: `must be "Customer" or "Employee"`,
+		})
+	}
 
 	// validate UserID greater than 0
 	if user.UserID < 1 {
-		problems["UserID"] = "UserID must be more than 0"
-	}
-
-	// validate role is `Customer` or `Employee`
-	if user.Role != "Customer" && user.Role != "Employee" {
-		problems["Role"] = "Role must be 'Customer' or 'Employee'"
+		problems = append(problems, problem{
+			Name:        "user_id",
+			Description: "must be must be greater than zero",
+		})
 	}
 
 	return problems
 }
 
-func decodeValidateBody[I ValidatorMapper[O], O any](requestBody string) (O, map[string]string, error) {
+type problem struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type Validator interface {
+	Valid() (problems []problem)
+}
+
+type Mapper[T any] interface {
+	MapTo() (T, error)
+}
+
+type ValidatorMapper[T any] interface {
+	Validator
+	Mapper[T]
+}
+
+func decodeValidateBody[I ValidatorMapper[O], O any](requestBody string) (O, []problem, error) {
 	var inputModel I
 
 	// decode to JSON

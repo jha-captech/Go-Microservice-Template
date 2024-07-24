@@ -21,7 +21,7 @@ func HandleUpdateUser(logger log.Logger, service userUpdater) HandlerFunc {
 		ID, err := strconv.Atoi(idString)
 		if err != nil {
 			logger.Error("error getting ID", "error", err)
-			return encodeResponse(logger, http.StatusOK, responseErr{
+			return encodeResponse(logger, http.StatusBadRequest, responseErr{
 				Error: "Not a valid ID",
 			})
 		}
@@ -32,12 +32,12 @@ func HandleUpdateUser(logger log.Logger, service userUpdater) HandlerFunc {
 			switch {
 			case len(problems) > 0:
 				logger.Error("Problems validating input", "error", err, "problems", problems)
-				return encodeResponse(logger, http.StatusOK, responseErr{
+				return encodeResponse(logger, http.StatusBadRequest, responseErr{
 					ValidationErrors: problems,
 				})
 			default:
 				logger.Error("BodyParser error", "error", err)
-				return encodeResponse(logger, http.StatusOK, responseErr{
+				return encodeResponse(logger, http.StatusBadRequest, responseErr{
 					Error: "missing values or malformed body",
 				})
 			}
@@ -47,7 +47,7 @@ func HandleUpdateUser(logger log.Logger, service userUpdater) HandlerFunc {
 		user, err := service.UpdateUser(ctx, ID, userIn)
 		if err != nil {
 			logger.Error("error updating object in database", "error", err)
-			return encodeResponse(logger, http.StatusOK, responseErr{
+			return encodeResponse(logger, http.StatusInternalServerError, responseErr{
 				Error: "Error updating object",
 			})
 		}
