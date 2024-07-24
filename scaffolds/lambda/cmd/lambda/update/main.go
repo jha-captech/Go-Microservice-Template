@@ -13,7 +13,7 @@ import (
 	"github.com/captechconsulting/go-microservice-templates/lambda/internal/database"
 	"github.com/captechconsulting/go-microservice-templates/lambda/internal/handlers"
 	"github.com/captechconsulting/go-microservice-templates/lambda/internal/middleware"
-	"github.com/captechconsulting/go-microservice-templates/lambda/internal/service"
+	"github.com/captechconsulting/go-microservice-templates/lambda/internal/services"
 )
 
 func main() {
@@ -56,11 +56,11 @@ func run(ctx context.Context) error {
 		}
 	}()
 
-	svs := service.NewUserService(db)
+	svs := services.NewUserService(db)
 
 	handler := handlers.HandleUpdateUser(logger, svs)
 
-	handler = middleware.AddMiddleware(
+	handler = middleware.AddToHandler(
 		handler,
 		middleware.Recovery(logger),
 	)

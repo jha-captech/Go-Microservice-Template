@@ -58,7 +58,7 @@ func run(ctx context.Context) error {
 
 	service := services.NewUserService(db)
 
-	handler := handlers.HandleListUsers(logger, service)
+	handler := handlers.API(logger, service)
 
 	handler = middleware.AddToHandler(
 		handler,

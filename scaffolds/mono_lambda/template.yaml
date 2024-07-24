@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample GoLand Lambda
+
+Globals:
+  Function:
+    Handler: bootstrap
+    Runtime: provided.al2023
+    Architectures:
+      - x86_64
+    Timeout: 5
+    MemorySize: 128
+    LoggingConfig:
+      LogFormat: JSON
+    Environment:
+      Variables:
+        ENV: !Ref ENV
+        DATABASE_CONTAINER_NAME: !Ref DATABASE_CONTAINER_NAME
+        DATABASE_NAME: !Ref DATABASE_NAME
+        DATABASE_USER: !Ref DATABASE_USER
+        DATABASE_PASSWORD: !Ref DATABASE_PASSWORD
+        DATABASE_HOST: !Ref DATABASE_HOST
+        DATABASE_PORT: !Ref DATABASE_PORT
+        DATABASE_CONNECTION_RETRY: !Ref DATABASE_CONNECTION_RETRY
+
+Resources:
+
+  # ── Lambdas ─────────────────────────────────────────────────────────────────────────────────────
+  
+  UserMicroserviceList:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      CodeUri: cmd/mono_lambda/list/
+      Events:
+        ListUser:
+          Type: Api
+          Properties:
+            Path: /api/user
+            Method: GET
+
+  UserMicroserviceUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      CodeUri: cmd/mono_lambda/update/
+      Events:
+        ListUser:
+          Type: Api
+          Properties:
+            Path: /api/user/{ID}
+            Method: PUT
