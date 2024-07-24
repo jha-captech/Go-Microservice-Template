@@ -2,9 +2,19 @@
 
 A collection of service templates for Go. Examples include both microservice and serverless architectures.
 
+## Architecture
+
+### Layout
+
+TODO
+
+### Diagrams
+
+TODO
+
 ## Architectural Goals
 
-The following goals underpin many of the decisions for these templates, and help drive architectural decisions.
+The following goals underpin many of the decisions for these templates, and help drive architectural decisions. These goals are in no particular order.
 
 ### Simplicity
 
@@ -37,31 +47,29 @@ The provided architecture strikes a balance between those two extremes, by provi
 
 It's important to realize that architecture is about solving organizational challenges more than technical ones, and while we believe these templates will provide a starting point for most projects, you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
 
-## Architecture
+### Maintainability
 
-### Diagrams
+Developing a solution is only the first step. Software must also be maintained and extended over time. As noted above, the architecture present in these templates favors simplicity, which in turn helps with maintainability.
 
-TODO
+Because our packages are flat, and we have just a few layers in our architecture its less effort for us to add new functionality. And because we rely less on abstractions and more on concrete implementations, we have less concerns about internal breaking changes.
 
-### Layout
+A simpler solution also means there are less corners for bugs to hide in, helping the overall maintenance burden.
 
-TODO
+## Architecture Decisions
 
-### Decisions
-
-#### Flat packages
+### Flat packages
 
 Application packages declared under `internal` are flat. There are no nested packages.
 
 This keeps code more obvious and clear. Nested packages quickly add additional mental hoops that developers must jump through and begin to make us lose sight of the ultimate goal of development and delivery of functionality.
 
-#### `cmd` & `internal`
+### `cmd` & `internal`
 
 The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with the Go community's recommendations for module organization. Specifically recommendations for organizing modules that represent deployable artifacts.
 
 [Recommendations on Module Organization](https://go.dev/doc/modules/layout#server-project)
 
-## Features
+## Scaffold Features
 
 - Utilize idiomatic Go and Industry best practices
   - Limited and judicious use of 3rd party libraries
@@ -82,5 +90,3 @@ The choice to use `cmd` to represent application binaries, and `internal` to hol
   - Graceful shutdown
   - Table-driven unit tests
   - E2E Integration tests
-
-## TODO
