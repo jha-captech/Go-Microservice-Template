@@ -8,11 +8,11 @@ The following goals underpin many of the decisions for these templates, and help
 
 ### Simplicity
 
-First and foremost, this architcture strives to be as simple as possible, but no simpler. Go is a brutalistic and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
+First and foremost, this architecture strives to be as simple as possible, but no simpler. Go is a brutalist and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
 
 The project templates in this repo all follow a simple layered architecture, with a `cmd` folder representing executables, and an `internal` folder holding the application packages. More details on the architecture can be found below.
 
-This architecture strikes a balance between extremely lean and flat architectures that are becoming increasingly popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
+This architecture strikes a balance between the extremely lean and flat architectures that are becoming more popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
 
 ### Glanceability
 
@@ -28,6 +28,14 @@ A few examples of glanceability at work.
 - All of our application config is located in a single `internal/config` package, which gives us context to the full set of environment variables and configuration needed to run the service.
 
 ### Scaleability
+
+For these templates, scaleability refers to the ability to scale the architecture up or down depending on the needs of the project. We've worked to provide sane starting templates, that will conform to the vast majority of projects we'll be developing.
+
+This architecture could also be scaled to extreme levels, such as slimming down to a completely flat architecture (everything in package main), or pushing for higher degrees of structure and package hierarchy.
+
+The provided architecture strikes a balance between those two extremes, by providing enough structure and guardrails to push developers towards the pit of success, without being so opinionated that you become painted into a corner or are stuck writing endless amounts of boilerplate code.
+
+It's important to realize that architecture is about solving organizational challenges more than technical ones, and while we believe these templates will provide a starting point for most projects, you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
 
 ## Architecture
 
