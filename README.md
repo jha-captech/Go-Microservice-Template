@@ -12,11 +12,38 @@ The scaffolds in this repo follow a similar layout, with executable placed under
 
 A description of common packages can be found [below](#common-packages).
 
+#### `cmd` layout
+
+##### Monolithic Lambda
+
 ```
 .
-├── cmd/
-│   └── lambda/
-│       └── main.go               # Monolithic application entrypoint
+└── cmd/
+    └── lambda/
+        └── main.go               # Monolithic application entrypoint
+```
+
+##### Multi Lambda
+
+```
+.
+└── cmd/
+    ├── create_user/
+    │   └── main.go               # Create user lambda entrypoint
+    ├── read_user/
+    │   └── main.go               # Read user lambda entrypoint
+    ├── update_user/
+    │   └── main.go               # Update user lambda entrypoint
+    └── delete_user/
+        └── main.go               # Delete user lambda entrypoint
+```
+
+#### `internal` layout
+
+The internal layout has very little changes between each scaffold.
+
+```
+.
 └── internal/
     ├── config/
     │   └── config.go             # Application config definition and loading
