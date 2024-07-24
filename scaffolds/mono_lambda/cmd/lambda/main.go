@@ -23,10 +23,13 @@ func main() {
 	}
 }
 
+// run is the main function that initializes the configuration, sets up logging, connects to the
+// database, initializes the user service, and starts the AWS Lambda handler with the necessary
+// middleware. It returns an error if any step in this initialization process fails.
 func run(ctx context.Context) error {
 	cfg, err := config.New()
 	if err != nil {
-		return fmt.Errorf("[in main.run]: %w", err)
+		return fmt.Errorf("[in main.run] failed to load config: %w", err)
 	}
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{

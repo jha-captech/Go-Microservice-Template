@@ -8,6 +8,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Configuration holds the application configuration settings. The configuration is loaded from
+// environment variables.
 type Configuration struct {
 	Env             string     `env:"ENV,required"`
 	LogLevel        slog.Level `env:"LOG_LEVEL,required"`
@@ -19,6 +21,8 @@ type Configuration struct {
 	DBRetryDuration int        `env:"DATABASE_RETRY_DURATION_SECONDS"`
 }
 
+// New loads the configuration settings from environment variables and .env file, and returns a
+// Configuration struct.
 func New() (Configuration, error) {
 	_ = godotenv.Load()
 

@@ -14,6 +14,9 @@ type userUpdater interface {
 	UpdateUser(ctx context.Context, ID int, user models.User) (models.User, error)
 }
 
+// HandleUpdateUser returns a HandlerFunc that handles POST requests to update a user. It retrieves
+// the user ID from the path parameters, decodes and validates the request body, updates the user
+// in the database, and returns the updated user in the response.
 func HandleUpdateUser(logger *slog.Logger, service userUpdater) HandlerFunc {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		// get and validate ID

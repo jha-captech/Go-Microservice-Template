@@ -16,6 +16,7 @@ type outputUser struct {
 	UserID    int    `json:"user_id"`
 }
 
+// mapOutput maps a models.User struct to an outputUser struct.
 func mapOutput(user models.User) outputUser {
 	return outputUser{
 		ID:        int(user.ID),
@@ -26,6 +27,7 @@ func mapOutput(user models.User) outputUser {
 	}
 }
 
+// mapMultipleOutput maps a slice of []models.User to a slice of []outputUser.
 func mapMultipleOutput(user []models.User) []outputUser {
 	usersOut := make([]outputUser, len(user))
 	for i := 0; i < len(user); i++ {
@@ -57,7 +59,8 @@ type responseErr struct {
 	ValidationErrors []problem `json:"validation_errors,omitempty"`
 }
 
-// encodeResponse encodes data as a JSON response.
+// encodeResponse encodes data as a JSON and returns that data with a status code on an
+// events.APIGatewayProxyResponse struct.
 func encodeResponse(logger *slog.Logger, status int, data any) (events.APIGatewayProxyResponse, error) {
 	JSONData, err := json.Marshal(data)
 	if err != nil {

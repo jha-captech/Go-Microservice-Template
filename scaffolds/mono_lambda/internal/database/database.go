@@ -12,8 +12,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// New Establish Session connection and migrate tables before
-// returning database.database struct.
+// New establishes a database connection, tests that connection with `ping()`, and returns the connection.
 func New(ctx context.Context, connectionString string, logger *slog.Logger, retryDuration time.Duration) (*sql.DB, error) {
 	logger.Info("Attempting to connect to database")
 	retryCount := 0
@@ -57,14 +56,6 @@ func New(ctx context.Context, connectionString string, logger *slog.Logger, retr
 
 // Retry repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
 // It uses an exponential backoff strategy for retries.
-//
-// Parameters:
-// - ctx: The context to control the lifetime of the retry loop.
-// - maxDuration: The maximum duration to keep retrying.
-// - retryFunc: The function to call repeatedly until it succeeds.
-//
-// Returns:
-// - error: The last error returned by retryFunc, or nil if retryFunc succeeds.
 func Retry(ctx context.Context, maxDuration time.Duration, retryFunc func() error) error {
 	_, err := RetryResult(ctx, maxDuration, func() (any, error) {
 		return nil, retryFunc()
@@ -74,15 +65,6 @@ func Retry(ctx context.Context, maxDuration time.Duration, retryFunc func() erro
 
 // RetryResult repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
 // It uses an exponential backoff strategy for retries.
-//
-// Parameters:
-// - ctx: The context to control the lifetime of the retry loop.
-// - maxDuration: The maximum duration to keep retrying.
-// - retryFunc: The function to call repeatedly until it succeeds. It should return a result and an error.
-//
-// Returns:
-// - T: The result returned by a successful call to retryFunc.
-// - error: The last error returned by retryFunc, or nil if retryFunc succeeds.
 func RetryResult[T any](ctx context.Context, maxDuration time.Duration, retryFunc func() (T, error)) (T, error) {
 	var (
 		returnData T

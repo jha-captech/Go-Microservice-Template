@@ -2,13 +2,13 @@ package middleware
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/captechconsulting/go-microservice-templates/lambda/internal/log"
 )
 
-func Recovery(logger log.Logger) LambdaMiddleware {
+func Recovery(logger *slog.Logger) LambdaMiddleware {
 	return func(next HandlerFunc) HandlerFunc {
 		return func(ctx context.Context, request events.APIGatewayProxyRequest) (event events.APIGatewayProxyResponse, err error) {
 			defer func() {
