@@ -16,6 +16,17 @@ This architecture strikes a balance between extremely lean and flat architecture
 
 ### Glanceability
 
+When we say glanceability what we mean is "how easy is to get information at a glance". This architecture strives to be highly glanceable. Packages are well named and flat, file names all follow the same conventions, and code is organized in a way to get the high level details near the top of a file, followed by more specific implementation details.
+
+A few examples of glanceability at work.
+
+- Within the `internal/handlers` package its clear to see which handlers have tests and which do not, simply by the presence or absence of an `_test.go` file.
+- Looking in `cmd` in the `lambda` and `mono_lambda` scaffolds we can immediately see how our application is deployed.
+  - Under `cmd` in `lambda` we can see the executables representing our individual lambda functions.
+  - Under `cmd` in `mono_lambda` we can see that the scaffold contains a single monolithic executable for the entire application.
+- Within the `internal/handlers` package we can see a collection of all the operations a service supports.
+- All of our application config is located in a single `internal/config` package, which gives us context to the full set of environment variables and configuration needed to run the service.
+
 ### Scaleability
 
 ## Architecture
