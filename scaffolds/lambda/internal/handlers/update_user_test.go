@@ -48,6 +48,21 @@ func TestHandleUpdateUser(t *testing.T) {
 			},
 			expectedError: nil,
 		},
+		"invalid ID": {
+			mockCalled: false,
+			mockInput:  nil,
+			mockOutput: nil,
+			request: events.APIGatewayProxyRequest{
+				PathParameters: map[string]string{"ID": "test"},
+				Body:           testutil.ToJSONString(responseUser{User: userOut}),
+			},
+			expectedResponse: events.APIGatewayProxyResponse{
+				StatusCode: http.StatusBadRequest,
+				Headers:    map[string]string{"Content-Type": "application/json"},
+				Body:       testutil.ToJSONString(responseErr{Error: "Not a valid ID"}),
+			},
+			expectedError: nil,
+		},
 		"invalid request body": {
 			mockCalled: false,
 			mockInput:  nil,
