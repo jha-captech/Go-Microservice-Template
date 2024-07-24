@@ -28,6 +28,9 @@ func New(ctx context.Context, connectionString string, logger *slog.Logger, retr
 			err,
 		)
 	}
+	if db == nil {
+		return nil, fmt.Errorf("[in database.New] db is nil")
+	}
 	logger.Info("Successfully connected to database", "retry count", retryCount)
 
 	logger.Info("Attempting to ping database")
@@ -57,9 +60,10 @@ func New(ctx context.Context, connectionString string, logger *slog.Logger, retr
 // Retry repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
 // It uses an exponential backoff strategy for retries.
 func Retry(ctx context.Context, maxDuration time.Duration, retryFunc func() error) error {
-	_, err := RetryResult(ctx, maxDuration, func() (any, error) {
-		return nil, retryFunc()
+	_, err := RetryResult(ctx, maxDuration, func() (int, error) {
+		return 1, retryFunc()
 	})
+
 	return err
 }
 
@@ -70,7 +74,7 @@ func RetryResult[T any](ctx context.Context, maxDuration time.Duration, retryFun
 		returnData T
 		err        error
 	)
-	const maxBackoffMilliseconds = 2_000.0
+	const maxBackoffMilliseconds = 5_000.0
 
 	ctx, cancelFunc := context.WithTimeout(ctx, maxDuration)
 	defer cancelFunc()

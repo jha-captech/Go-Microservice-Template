@@ -1,0 +1,6 @@
+{
+  "resource": "/",
+  "path": "/api/user",
+  "httpMethod": "GET"
+}
+  
