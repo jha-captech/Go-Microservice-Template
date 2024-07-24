@@ -6,10 +6,17 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/captechconsulting/go-microservice-templates/lambda/internal/services"
+	"github.com/captechconsulting/go-microservice-templates/lambda/internal/models"
 )
 
-func API(logger *slog.Logger, service *services.UserService) HandlerFunc {
+type userService interface {
+	ListUsers(ctx context.Context) ([]models.User, error)
+	UpdateUser(ctx context.Context, ID int, user models.User) (models.User, error)
+}
+
+// API returns a HandlerFunc that handles incoming API Gateway proxy requests. It routes the
+// requests to the appropriate handler based on the HTTP method.
+func API(logger *slog.Logger, service userService) HandlerFunc {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		switch request.HTTPMethod {
 		case http.MethodGet:
@@ -17,6 +24,7 @@ func API(logger *slog.Logger, service *services.UserService) HandlerFunc {
 		case http.MethodPost:
 			return HandleUpdateUser(logger, service)(ctx, request)
 		default:
+			logger.Warn("Unsupported route", "method", request.HTTPMethod, "path", request.Path)
 			return events.APIGatewayProxyResponse{
 				StatusCode: http.StatusNotFound,
 				Headers:    map[string]string{"Content-Type": "application/json"},

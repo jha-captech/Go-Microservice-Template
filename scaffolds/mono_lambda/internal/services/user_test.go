@@ -61,7 +61,7 @@ func (s *testSuit) TestListUsers() {
 			mockReturn:     &sqlmock.Rows{},
 			mockReturnErr:  errors.New("test"),
 			expectedReturn: []models.User{},
-			expectedError:  fmt.Errorf("[in services.ListUsers]: %w", errors.New("test")),
+			expectedError:  fmt.Errorf("[in services.ListUsers] failed to get users: %w", errors.New("test")),
 		},
 	}
 	for name, tc := range testCases {
@@ -114,7 +114,7 @@ func (s *testSuit) TestUpdateUser() {
 			inputID:        0,
 			inputUser:      userIn,
 			expectedReturn: models.User{},
-			expectedError:  fmt.Errorf("[in services.UpdateUser]: %w", errors.New("test")),
+			expectedError:  fmt.Errorf("[in services.UpdateUser] failed to update user: %w", errors.New("test")),
 		},
 	}
 	for name, tc := range testCases {

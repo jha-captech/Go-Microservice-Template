@@ -14,6 +14,7 @@ type inputUser struct {
 	UserID    int    `json:"user_id"`
 }
 
+// MapTo maps a inputUser to a models.User object.
 func (user inputUser) MapTo() (models.User, error) {
 	return models.User{
 		ID:        0,
@@ -24,6 +25,7 @@ func (user inputUser) MapTo() (models.User, error) {
 	}, nil
 }
 
+// Valid validates all fields of an inputUser struct.
 func (user inputUser) Valid() []problem {
 	var problems []problem
 
@@ -67,24 +69,34 @@ func (user inputUser) Valid() []problem {
 	return problems
 }
 
+// problem represents an issue found during validation.
 type problem struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
+// Validator is an interface that defines a method for validating an object.
+// It returns a slice of problems found during validation.
 type Validator interface {
 	Valid() (problems []problem)
 }
 
+// Mapper is a generic interface that defines a method for mapping an object to another type.
+// The MapTo method returns the mapped object and an error if the mapping fails.
 type Mapper[T any] interface {
 	MapTo() (T, error)
 }
 
+// ValidatorMapper is a generic interface that combines Validator and Mapper interfaces.
+// It requires implementing both validation and mapping methods.
 type ValidatorMapper[T any] interface {
 	Validator
 	Mapper[T]
 }
 
+// decodeValidateBody decodes a JSON string into a ValidatorMapper, validates it, and maps it to
+// the output type. If decoding, validation, or mapping fails, it returns the appropriate errors
+// and problems.
 func decodeValidateBody[I ValidatorMapper[O], O any](requestBody string) (O, []problem, error) {
 	var inputModel I
 
