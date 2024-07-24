@@ -42,15 +42,15 @@ A description of common packages can be found [below](#common-packages).
 
 Each scaffold has common packages it implements, the details of which can be found below.
 
-#### config
+#### `config`
 
 config contains a struct declaring all application config, as well as a function for loading config from environment variables.
 
-#### database
+#### `database`
 
 database contains standardized logic for connecting to a database and pinging the connection to ensure success.
 
-#### handlers
+#### `handlers`
 
 handlers contain handler functions. An API will contain handlers that conform to the `net/http Handler` interface, lambda projects will contain handlers that conform to lambda handler signatures.
 
@@ -104,19 +104,19 @@ func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
 
 ```
 
-#### middleware
+#### `middleware`
 
 middleware contains common middleware functions. Like above, middleware function signatures will differ based on the deployment target of the application.
 
-#### models
+#### `models`
 
 models contains domain models for the application. No other logic should be present within the models package. Struct tags are an appropriate way to enable meta programming on domain models, such as specifying specific DB columns to map values to and from.
 
-#### services
+#### `services`
 
 services contain the core business logic of our application.
 
-#### testutil
+#### `testutil`
 
 testutil contains common testing utilities for marshaling and unmarshaling data and performing asserts.
 
@@ -124,7 +124,7 @@ testutil contains common testing utilities for marshaling and unmarshaling data 
 
 TODO
 
-## Architectural Goals
+## Architecture Goals
 
 The following goals underpin many of the decisions for these templates, and help drive architectural decisions. These goals are in no particular order.
 
@@ -171,7 +171,7 @@ Because our packages are flat, and we have just a few layers in our architecture
 
 A simpler solution also means there are less corners for bugs to hide in, helping the overall maintenance burden.
 
-## Architecture Decisions
+## Decisions
 
 ### Flat packages
 
