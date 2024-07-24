@@ -16,9 +16,13 @@ TODO
 
 The following goals underpin many of the decisions for these templates, and help drive architectural decisions. These goals are in no particular order.
 
+### Idiomatic
+
+This architecture follows idomatic Go practices, such as favoring simple and obvious code, embracing small and private interfaces, minimizing abstractions and indirection, developing well named packages, and keeping our both our package surface and API surface clean and free of clutter.
+
 ### Simplicity
 
-First and foremost, this architecture strives to be as simple as possible, but no simpler. Go is a brutalist and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
+This architecture strives to be as simple as possible, but no simpler. Go is a brutalist and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
 
 The project templates in this repo all follow a simple layered architecture, with a `cmd` folder representing executables, and an `internal` folder holding the application packages. More details on the architecture can be found below.
 
