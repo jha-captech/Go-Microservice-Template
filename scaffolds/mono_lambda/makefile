@@ -19,7 +19,7 @@ lambda_build:
 	sam build --no-cached
 
 .PHONY: lambda_local_api
-lambda_local_api: db_up lambda_build
+lambda_local_api: db_up_d lambda_build
 	sam local start-api -p 8080 --env-vars env.local.json
 	make db_down
 
