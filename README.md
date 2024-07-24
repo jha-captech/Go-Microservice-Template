@@ -18,6 +18,24 @@ This architecture strikes a balance between extremely lean and flat architecture
 
 ### Scaleability
 
+## Architecture
+
+### Diagrams
+
+TODO
+
+### Layout
+
+TODO
+
+### Decisions
+
+#### `cmd` & `internal`
+
+The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with the Go community's recommendations for module organization. Specifically recommendations for organizing modules that represent deployable artifacts.
+
+[Recommendations on Module Organization](https://go.dev/doc/modules/layout#server-project)
+
 ## Requirments
 
 - Utilize idiomatic Go and Industry best practices
