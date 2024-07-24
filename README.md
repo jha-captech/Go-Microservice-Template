@@ -4,9 +4,121 @@ A collection of service templates for Go. Examples include both microservice and
 
 ## Architecture
 
+The templates in this repo use a variation of a layered architecture.
+
 ### Layout
 
-TODO
+The scaffolds in this repo follow a similar layout, with executable placed under `cmd`, and application code placed in packages under `internal`.
+
+A description of common packages can be found [below](#common-packages).
+
+```
+.
+├── cmd/
+│   └── lambda/
+│       └── main.go               # Monolithic application entrypoint
+└── internal/
+    ├── config/
+    │   └── config.go             # Application config definition and loading
+    ├── database/
+    │   └── database.go           # Database connection logic
+    ├── handlers/
+    │   ├── api.go                # Monolithic lambda handler
+    │   ├── create_user.go        # Individual lambda handler, includes request and response structs and validation
+    │   ├── create_user_test.go   # Lambda handler test
+    │   └── ...
+    ├── middleware/
+    │   ├── middleware.go         # Common type definitions and helpers for middleware
+    │   └── recovery.go           # Sample lambda middleware for panic recovery
+    ├── models/
+    │   └── user.go               # Plain go structs representing domain models
+    ├── services/
+    │   └── user.go               # Domain service, center of all business logic
+    └── testutil/
+        └── ...                   # Common utilities for tests
+```
+
+### Common Packages
+
+Each scaffold has common packages it implements, the details of which can be found below.
+
+#### config
+
+config contains a struct declaring all application config, as well as a function for loading config from environment variables.
+
+#### database
+
+database contains standardized logic for connecting to a database and pinging the connection to ensure success.
+
+#### handlers
+
+handlers contain handler functions. An API will contain handlers that conform to the `net/http Handler` interface, lambda projects will contain handlers that conform to lambda handler signatures.
+
+handlers also contains unexported request and response models, as well as validation and mapping to validate requests before mapping them into a type recognized by the service layer.
+
+Handlers are written as closures, which allows dependencies to be supplied to the handler, without the additional weight of defining a struct and method.
+
+##### Example
+
+###### HTTP
+
+```go
+package handlers
+
+type createUserRequest struct {
+  Name string `json:"name"`
+}
+
+type createUserResponse struct {
+  User models.User `json:"user"
+}
+
+func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
+  return http.HandlerFunc(func(r *http.Request, w http.ResponseWriter) {
+    // unmarshal request body into struct, validate, call supplied user service
+    // ...
+  })
+}
+```
+
+###### Lambda
+
+```go
+package handlers
+
+type createUserRequest struct {
+  Name string `json:"name"`
+}
+
+type createUserResponse struct {
+  User models.User `json:"user"
+}
+
+func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
+  return func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+    // unmarshal request body into struct, validate, call supplied user service
+    // ...
+    return &events.APIGatewayProxyResponse{}, nil
+  }
+}
+
+```
+
+#### middleware
+
+middleware contains common middleware functions. Like above, middleware function signatures will differ based on the deployment target of the application.
+
+#### models
+
+models contains domain models for the application. No other logic should be present within the models package. Struct tags are an appropriate way to enable meta programming on domain models, such as specifying specific DB columns to map values to and from.
+
+#### services
+
+services contain the core business logic of our application.
+
+#### testutil
+
+testutil contains common testing utilities for marshaling and unmarshaling data and performing asserts.
 
 ### Diagrams
 
