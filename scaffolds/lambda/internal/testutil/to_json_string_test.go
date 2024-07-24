@@ -48,10 +48,11 @@ func TestToJSONString(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			if tc.shouldPanic {
 				assert.Panics(t, func() { ToJSONString(tc.input) })
-			} else {
-				result := ToJSONString(tc.input)
-				assert.Equal(t, tc.expected, result)
+				return
 			}
+
+			result := ToJSONString(tc.input)
+			assert.Equal(t, tc.expected, result)
 		})
 	}
 }
