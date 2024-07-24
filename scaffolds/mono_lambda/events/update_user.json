@@ -1,0 +1,11 @@
+{
+  "body": "{\"id\":1,\"first_name\":\"Johnny\",\"last_name\":\"Doe\",\"role\":\"Customer\",\"user_id\":1001}",
+  "path": "/api/user/1",
+  "pathParameters": {
+    "ID": "1"
+  },
+  "httpMethod": "PUT",
+  "headers": {
+    "content-type": "application/json"
+  }
+}

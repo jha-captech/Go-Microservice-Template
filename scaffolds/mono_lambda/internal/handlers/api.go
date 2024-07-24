@@ -21,7 +21,7 @@ func API(logger *slog.Logger, service userService) HandlerFunc {
 		switch request.HTTPMethod {
 		case http.MethodGet:
 			return HandleListUsers(logger, service)(ctx, request)
-		case http.MethodPost:
+		case http.MethodPut:
 			return HandleUpdateUser(logger, service)(ctx, request)
 		default:
 			logger.Warn("Unsupported route", "method", request.HTTPMethod, "path", request.Path)

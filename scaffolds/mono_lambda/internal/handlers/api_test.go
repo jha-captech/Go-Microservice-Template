@@ -54,7 +54,7 @@ func TestAPI(t *testing.T) {
 			},
 			expectedError: nil,
 		},
-		"POST update user": {
+		"PUT update user": {
 			mockCalled: true,
 			mockSetup: func() {
 				mockService.
@@ -63,7 +63,7 @@ func TestAPI(t *testing.T) {
 					Once()
 			},
 			request: events.APIGatewayProxyRequest{
-				HTTPMethod:     http.MethodPost,
+				HTTPMethod:     http.MethodPut,
 				PathParameters: map[string]string{"ID": "1"},
 				Body:           testutil.ToJSONString(userIn),
 			},
@@ -74,11 +74,11 @@ func TestAPI(t *testing.T) {
 			},
 			expectedError: nil,
 		},
-		"PUT method not found": {
+		"POST method not found": {
 			mockCalled: false,
 			mockSetup:  nil,
 			request: events.APIGatewayProxyRequest{
-				HTTPMethod: http.MethodPut,
+				HTTPMethod: http.MethodPost,
 			},
 			expectedResponse: events.APIGatewayProxyResponse{
 				StatusCode: http.StatusNotFound,
