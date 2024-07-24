@@ -4,7 +4,7 @@ A collection of service templates for Go. Examples include both microservice and
 
 ## Architectural Goals
 
-These architectures are all underpinned by a similar set of goals, outlined below.
+The following goals underpin many of the decisions for these templates, and help drive architectural decisions.
 
 ### Simplicity
 
