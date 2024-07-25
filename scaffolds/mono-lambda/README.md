@@ -1,5 +1,7 @@
 # Go AWS Lambda Template - Mono Lambda
 
+A mono lambda project scaffold following Go best practices and conventions.
+
 ## Instruction
 
 ### Setup

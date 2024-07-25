@@ -1,4 +1,6 @@
-# Go AWS Lambda Template - Mono Lambda
+# Go AWS Lambda Template - Multi Lambda
+
+A multi lambda project scaffold following Go best practices and conventions.
 
 ## Instruction
 
@@ -28,5 +30,5 @@ make lambda_local_list_users
 #### SAM Local - update user event
 
 ```zsh
-make lambda_local_update_users
+make lambda_local_update_user
 ```
