@@ -130,6 +130,8 @@ The internal layout is mostly static between each scaffold. Internal contains th
 
 Each scaffold has common packages it implements, the details of which can be found below.
 
+_Note_ In a larger system, it's likely these packages would be split out into reusable libraries that all teams can leverage. This begins to enforce standards and consistency for things like logging, configuration, database access, etc.
+
 ### `config`
 
 config contains all application config as well as a function for loading config from environment variables.
