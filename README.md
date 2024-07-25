@@ -20,6 +20,7 @@ It's important to realize that architecture is about addressing organizational c
 - [Architecture Decisions](#architecture-decisions)
   - [Flat Packages](#flat-packages)
   - [`cmd` & `internal`](#cmd--internal)
+- [Architecture Diagrams](#architecture-diagrams)
 
 ## Features
 
@@ -278,3 +279,13 @@ This keeps code more obvious and clear. Nested packages quickly add additional m
 The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with the Go community's recommendations for module organization. Specifically recommendations for organizing modules that represent deployable artifacts.
 
 [Recommendations on Module Organization](https://go.dev/doc/modules/layout#server-project)
+
+## Architecture Diagrams
+
+### Mono Lambda
+
+![mono lambda system architecture](./scaffolds/mono-lambda/diagrams/Go%20Microservice%20Arch-Monolithic%20Lambda.drawio.svg)
+
+### Multi Lambda
+
+![multi lambda system architecture](./scaffolds/multi-lambda/diagrams/Go%20Microservice%20Arch-Multi%20Lambda.drawio.svg)
