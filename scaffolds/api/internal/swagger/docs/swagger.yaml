@@ -1,0 +1,131 @@
+definitions:
+  handlers.inputUser:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      role:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  handlers.outputUser:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      role:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  handlers.problem:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  handlers.responseErr:
+    properties:
+      error:
+        type: string
+      validation_errors:
+        items:
+          $ref: '#/definitions/handlers.problem'
+        type: array
+    type: object
+  handlers.responseMsg:
+    properties:
+      message:
+        type: string
+    type: object
+  handlers.responseUser:
+    properties:
+      user:
+        $ref: '#/definitions/handlers.outputUser'
+    type: object
+  handlers.responseUsers:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/handlers.outputUser'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /health-check:
+    get:
+      consumes:
+      - application/json
+      description: Health check response
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.responseMsg'
+      summary: Health check response
+      tags:
+      - health-check
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: List all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.responseUsers'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.responseErr'
+      summary: List all users
+      tags:
+      - users
+  /user/{ID}:
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.inputUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.responseUser'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.responseErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.responseErr'
+      summary: Update a user by ID
+      tags:
+      - user
+swagger: "2.0"
