@@ -233,7 +233,7 @@ This architecture strives to be as simple as possible, but no simpler. Go is a b
 
 This architecture strikes a balance between extremely lean and flat architectures that are becoming more popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
 
-### Glancable
+### Glanceable
 
 Glanceability means "how easy is to get information at a glance". This architecture strives to be highly glanceable. Packages are well named and flat, file names all follow the same conventions, and code is organized in a way to get the high level details near the top of a file, followed by more specific implementation details.
 
