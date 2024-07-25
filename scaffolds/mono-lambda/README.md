@@ -32,3 +32,7 @@ make lambda_local_list_users
 ```zsh
 make lambda_local_update_users
 ```
+
+## Architecture
+
+![system architecture](./diagrams/Go%20Microservice%20Arch-Monolithic%20Lambda.drawio.svg)
