@@ -29,7 +29,6 @@ Each template in this repo is a fully deployable application and has the followi
   - Local setup instructions
   - Testing
   - Infrastructure as code
-  - CI/CD Pipeline
 - Boilerplate code for common needs including but not limited to:
   - Logging
   - Database connections
@@ -37,9 +36,7 @@ Each template in this repo is a fully deployable application and has the followi
   - Fully functional handlers
   - Basic service layer
   - Middleware
-  - Graceful shutdown
   - Table-driven unit tests
-  - E2E Integration tests
 
 ## Templates
 
