@@ -1,6 +1,6 @@
-# Go AWS Lambda Template - Mono Lambda
+# Go API Template - Chi
 
-A API project scaffold following Go best practices and conventions.
+An API project scaffold following Go best practices and conventions.
 
 ## Instruction
 
