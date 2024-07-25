@@ -5,6 +5,7 @@ A collection of service templates for Go. Examples include both microservice and
 ## Table of contents
 
 - [Features](#features)
+- [Templates](#templates)
 - [Architecture](#architecture)
   - [Executables](#executables)
   - [Application Packages](#application-packages)
@@ -39,6 +40,13 @@ Each template in this repo is a fully deployable application and has the followi
   - Graceful shutdown
   - Table-driven unit tests
   - E2E Integration tests
+
+## Templates
+
+| Template       | Description                                                          | Link                              |
+| -------------- | -------------------------------------------------------------------- | --------------------------------- |
+| `multi-lambda` | A microservice comprised of multiple lambda functions. **Preferred** | [Link](./scaffolds/multi-lambda/) |
+| `mono-lambda`  | A microservice comprised of a single monolithic lambda function.     | [Link](./scaffolds/mono-lambda/)  |
 
 ## Architecture
 
