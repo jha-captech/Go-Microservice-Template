@@ -1,20 +1,42 @@
-# Go-Microservice-Template
+# Go Microservice Templates
 
 A collection of service templates for Go. Examples include both microservice and serverless architectures.
 
 ## Architecture
 
-The templates in this repo use a variation of a layered architecture.
+The templates in this repo use a simple layered architecture. Executables are located under the `cmd` directory, and application code is located in packages under `internal`.
 
-### Layout
+### Executables
+
+Each executable under `cmd` is structured as a folder with the name of the executable, containing a single `main.go` file. This file has no logic outside of initializing dependencies and starting the runtime (Lambda, or an HTTP server).
+
+The makeup of the `cmd` directory depends on the deployment style. For a mono-lambda deployment a single `cmd/lambda` executable can be found. For the multi lambda deployment an executable will be defined per function (`cmd/list`, `cmd/update`).
+
+### Application packages
+
+Application packages are placed under `internal` to encapsulate service details (modules outside of the one we're developing are unable to import any packages we define under `internal`). This has the benefit of keeping our service implementation private from other services.
+
+| package      | description                               | Link                |
+| ------------ | ----------------------------------------- | ------------------- |
+| `config`     | Configuration definition and loading      | [Link](#config)     |
+| `database`   | Database connection with retry logic      | [Link](#database)   |
+| `handlers`   | Lambda or net/http Handlers               | [Link](#handlers)   |
+| `middleware` | Lambda or net/http middleware             | [Link](#middleware) |
+| `models`     | Domain models                             | [Link](#models)     |
+| `services`   | Domain services containing business logic | [Link](#services)   |
+| `testutil`   | Common test utilities                     | [Link](#testutil)   |
+
+More on architecture [goals](#architecture-goals), [project structure](#project-structure), and [architecture decision](#decisions) can be found below.
+
+## Project structure
 
 The scaffolds in this repo follow a similar layout, with executable placed under `cmd`, and application code placed in packages under `internal`.
 
 A description of common packages can be found [below](#common-packages).
 
-#### `cmd` layout
+### `cmd`
 
-##### Monolithic Lambda
+#### Monolithic Lambda
 
 ```
 .
@@ -23,7 +45,7 @@ A description of common packages can be found [below](#common-packages).
         └── main.go               # Monolithic application entrypoint
 ```
 
-##### Multi Lambda
+#### Multi Lambda
 
 ```
 .
@@ -38,7 +60,7 @@ A description of common packages can be found [below](#common-packages).
         └── main.go               # Delete user lambda entrypoint
 ```
 
-#### `internal` layout
+### `internal`
 
 The internal layout has very little changes between each scaffold.
 
@@ -65,19 +87,19 @@ The internal layout has very little changes between each scaffold.
         └── ...                   # Common utilities for tests
 ```
 
-### Common Packages
+## Packages
 
 Each scaffold has common packages it implements, the details of which can be found below.
 
-#### `config`
+### `config`
 
 config contains a struct declaring all application config, as well as a function for loading config from environment variables.
 
-#### `database`
+### `database`
 
 database contains standardized logic for connecting to a database and pinging the connection to ensure success.
 
-#### `handlers`
+### `handlers`
 
 handlers contain handler functions. An API will contain handlers that conform to the `net/http Handler` interface, lambda projects will contain handlers that conform to lambda handler signatures.
 
@@ -85,9 +107,9 @@ handlers also contains unexported request and response models, as well as valida
 
 Handlers are written as closures, which allows dependencies to be supplied to the handler, without the additional weight of defining a struct and method.
 
-##### Example
+#### Example
 
-###### HTTP
+##### HTTP
 
 ```go
 package handlers
@@ -108,7 +130,7 @@ func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
 }
 ```
 
-###### Lambda
+##### Lambda
 
 ```go
 package handlers
@@ -131,19 +153,19 @@ func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
 
 ```
 
-#### `middleware`
+### `middleware`
 
 middleware contains common middleware functions. Like above, middleware function signatures will differ based on the deployment target of the application.
 
-#### `models`
+### `models`
 
 models contains domain models for the application. No other logic should be present within the models package. Struct tags are an appropriate way to enable meta programming on domain models, such as specifying specific DB columns to map values to and from.
 
-#### `services`
+### `services`
 
 services contain the core business logic of our application.
 
-#### `testutil`
+### `testutil`
 
 testutil contains common testing utilities for marshaling and unmarshaling data and performing asserts.
 
