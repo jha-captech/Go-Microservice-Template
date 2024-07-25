@@ -28,7 +28,7 @@ lambda_local_list_users: db_up_d lambda_build
 	sam local invoke --event ./events/list_users.json --env-vars env.local.json
 	make db_down
 
-.PHONY: lambda_local_update_users
-lambda_local_update_users: db_up_d lambda_build
+.PHONY: lambda_local_update_user
+lambda_local_update_user: db_up_d lambda_build
 	sam local invoke --event ./events/update_user.json --env-vars env.local.json
 	make db_down
