@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log/slog"
 	"math"
@@ -16,7 +17,7 @@ import (
 func New(ctx context.Context, connectionString string, logger *slog.Logger, retryDuration time.Duration) (*sql.DB, error) {
 	logger.Info("Attempting to connect to database")
 	retryCount := 0
-	db, err := RetryResult(ctx, retryDuration, func() (*sql.DB, error) {
+	db, err := retryResult(ctx, retryDuration, func() (*sql.DB, error) {
 		retryCount++
 		return sql.Open("postgres", connectionString)
 	})
@@ -35,7 +36,7 @@ func New(ctx context.Context, connectionString string, logger *slog.Logger, retr
 
 	logger.Info("Attempting to ping database")
 	retryCount = 0
-	err = Retry(ctx, retryDuration, func() error {
+	err = retry(ctx, retryDuration, func() error {
 		retryCount++
 		return db.Ping()
 	})
@@ -57,23 +58,27 @@ func New(ctx context.Context, connectionString string, logger *slog.Logger, retr
 	return db, nil
 }
 
-// Retry repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
+// retry repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
 // It uses an exponential backoff strategy for retries.
-func Retry(ctx context.Context, maxDuration time.Duration, retryFunc func() error) error {
-	_, err := RetryResult(ctx, maxDuration, func() (int, error) {
+func retry(ctx context.Context, maxDuration time.Duration, retryFunc func() error) error {
+	_, err := retryResult(ctx, maxDuration, func() (int, error) {
 		return 1, retryFunc()
 	})
 
 	return err
 }
 
-// RetryResult repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
+// retryResult repeatedly calls the provided retryFunc until it succeeds or the maxDuration is exceeded.
 // It uses an exponential backoff strategy for retries.
-func RetryResult[T any](ctx context.Context, maxDuration time.Duration, retryFunc func() (T, error)) (T, error) {
+func retryResult[T any](ctx context.Context, maxDuration time.Duration, retryFunc func() (T, error)) (T, error) {
 	var (
 		returnData T
 		err        error
 	)
+	if maxDuration <= 0 {
+		return returnData, errors.New("invalid retry duration supplied")
+	}
+
 	const maxBackoffMilliseconds = 5_000.0
 
 	ctx, cancelFunc := context.WithTimeout(ctx, maxDuration)

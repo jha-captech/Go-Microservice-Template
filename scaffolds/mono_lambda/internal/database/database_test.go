@@ -56,11 +56,22 @@ func TestRetry(t *testing.T) {
 			wantErr: true,
 			errMsg:  "temporary error",
 		},
+		"Invalid maxDuration": {
+			args: args{
+				ctx:         context.Background(),
+				maxDuration: 0 * time.Second,
+				retryFunc: func() error {
+					return errors.New("temporary error")
+				},
+			},
+			wantErr: true,
+			errMsg:  "invalid retry duration supplied",
+		},
 	}
 
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			err := Retry(tt.args.ctx, tt.args.maxDuration, tt.args.retryFunc)
+			err := retry(tt.args.ctx, tt.args.maxDuration, tt.args.retryFunc)
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -122,7 +133,7 @@ func TestRetryResult(t *testing.T) {
 
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			_, err := RetryResult(tt.args.ctx, tt.args.maxDuration, tt.args.retryFunc)
+			_, err := retryResult(tt.args.ctx, tt.args.maxDuration, tt.args.retryFunc)
 
 			if tt.wantErr {
 				assert.Error(t, err)
