@@ -35,4 +35,4 @@ make lambda_local_update_user
 
 ## Architecture
 
-![system architecture](./diagrams/Go%20Microservice%20Arch-Monolithic%20Lambda.drawio.svg)
+![system architecture](./diagrams/Go%20Microservice%20Arch-Multi%20Lambda.drawio.svg)
