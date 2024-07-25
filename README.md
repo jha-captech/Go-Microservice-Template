@@ -97,7 +97,7 @@ type createUserRequest struct {
 }
 
 type createUserResponse struct {
-  User models.User `json:"user"
+  User models.User `json:"user"`
 }
 
 func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
@@ -118,7 +118,7 @@ type createUserRequest struct {
 }
 
 type createUserResponse struct {
-  User models.User `json:"user"
+  User models.User `json:"user"`
 }
 
 func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
