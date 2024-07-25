@@ -47,6 +47,7 @@ Each template in this repo is a fully deployable application and has the followi
 | -------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `multi-lambda` | A microservice comprised of multiple lambda functions. _**Preferred**_ | [Link](./scaffolds/multi-lambda/README.md#go-aws-lambda-template---multi-lambda) |
 | `mono-lambda`  | A microservice comprised of a single monolithic lambda function.       | [Link](./scaffolds/mono-lambda/README.md#go-aws-lambda-template---mono-lambda)   |
+| `api`          | A microservice comprised of a Go API.                                  | [Link](./scaffolds/api/README.md#go-aws-lambda-template---mono-lambda)           |
 
 ## Architecture
 
@@ -101,6 +102,16 @@ Application packages contain all of our application code and live under `interna
     │   └── main.go               # Update user lambda entrypoint
     └── ...
 ```
+
+#### API
+
+```
+.
+└── cmd/
+    └── api/
+        └── main.go               # API entrypoint
+```
+
 
 ### `internal`
 
@@ -164,10 +175,10 @@ type userCreator interface {
   CreateUser(name string) (models.User, error)
 }
 
-func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
-  return http.HandlerFunc(func(r *http.Request, w http.ResponseWriter) {
+func HandleCreateUser(logger *slog.Logger, service userCreator) http.HandlerFunc {
+  return func(w http.ResponseWriter, r *http.Request) {
     // unmarshal, validate, call service method ...
-  })
+  }
 }
 ```
 
