@@ -102,15 +102,11 @@ database contains standardized logic for connecting to a database and pinging th
 
 ### `handlers`
 
-handlers contain handler functions. An API will contain handlers that conform to the `net/http Handler` interface, lambda projects will contain handlers that conform to lambda handler signatures.
+handlers contains handler functions. The style of handlers will depend on the service type. A Lambda service will have [Lambda style handlers](https://docs.aws.amazon.com/lambda/latest/dg/golang-handler.html#golang-handler-signatures), a RESTful microservice will have [net/http style handlers](https://pkg.go.dev/net/http#Handler).
 
-handlers also contains unexported request and response models, as well as validation and mapping to validate requests before mapping them into a type recognized by the service layer.
+We recommend writing handlers as closures, which allows dependencies to be passed in without the additional weight of defining a struct and method. This works especially well for handlers as they typically do not have many dependencies, and writing a closure is a very succinct way to supply dependencies.
 
-Handlers are written as closures, which allows dependencies to be supplied to the handler, without the additional weight of defining a struct and method.
-
-#### Example
-
-##### HTTP
+#### HTTP Handler Example
 
 ```go
 package handlers
@@ -123,15 +119,18 @@ type createUserResponse struct {
   User models.User `json:"user"`
 }
 
-func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
+type userCreator interface {
+  CreateUser(name string) (models.User, error)
+}
+
+func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
   return http.HandlerFunc(func(r *http.Request, w http.ResponseWriter) {
-    // unmarshal request body into struct, validate, call supplied user service
-    // ...
+    // unmarshal, validate, call service method ...
   })
 }
 ```
 
-##### Lambda
+#### Lambda Handler Example
 
 ```go
 package handlers
@@ -144,10 +143,13 @@ type createUserResponse struct {
   User models.User `json:"user"`
 }
 
-func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
+type userCreator interface {
+  CreateUser(name string) (models.User, error)
+}
+
+func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
   return func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-    // unmarshal request body into struct, validate, call supplied user service
-    // ...
+    // unmarshal, validate, call service method ...
     return &events.APIGatewayProxyResponse{}, nil
   }
 }
@@ -156,15 +158,21 @@ func HandleCreateUser(logger *slog.Logger, service services.User) http.Handler {
 
 ### `middleware`
 
-middleware contains common middleware functions. Like above, middleware function signatures will differ based on the deployment target of the application.
+middleware contains common middleware functions. Middleware style will differ between Lambda and Microservice deplyoment targets.
 
 ### `models`
 
-models contains domain models for the application. No other logic should be present within the models package. Struct tags are an appropriate way to enable meta programming on domain models, such as specifying specific DB columns to map values to and from.
+models contains domain models for the application.
+
+We recommend making models plain Go structs to keep them as flexible as possible. Struct tags can be a way to attach metadata for operations such as marshing data to a database row.
 
 ### `services`
 
-services contain the core business logic of our application.
+services contains the core business logic of our application.
+
+We recommend defining services as structs. Defining services as structs allows us to share common dependencies such as database connections across methods.
+
+We highly recommend only defining structs in the service layer and avoiding the temptation to define and export interfaces. Interfaces in Go are more often used at point of consumption. This follows the "accept interfaces return structs" idiom for Go.
 
 ### `testutil`
 
