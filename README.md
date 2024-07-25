@@ -272,7 +272,7 @@ This keeps code more obvious and clear. Nested packages quickly add additional m
 
 ### `cmd` & `internal`
 
-The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with the Go community's recommendations for module organization. Specifically recommendations for organizing modules that represent deployable artifacts.
+The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with Go's recommendations for module organization. Specifically recommendations for organizing modules that represent server projects.
 
 [Recommendations on Module Organization](https://go.dev/doc/modules/layout#server-project)
 
