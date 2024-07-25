@@ -59,8 +59,6 @@ Each executable under `cmd` is structured as a folder with the name of the execu
         └── main.go
 ```
 
-The makeup of `cmd` depends on the deployment style. For a mono-lambda deployment a single `cmd/lambda` executable can be found. For the multi lambda deployment an executable will be defined per function (`cmd/list`, `cmd/update`).
-
 ### Application Packages
 
 Application packages contain all of our application code and live under `internal`. This prevents outside applications and libraries from importing our application code, keeping our implementation details private.
@@ -69,7 +67,7 @@ Application packages contain all of our application code and live under `interna
 | ------------ | ----------------------------------------- | ------------------- |
 | `config`     | Configuration definition and loading      | [Link](#config)     |
 | `database`   | Database connection with retry logic      | [Link](#database)   |
-| `handlers`   | Lambda or net/http Handlers               | [Link](#handlers)   |
+| `handlers`   | Lambda or net/http handlers               | [Link](#handlers)   |
 | `middleware` | Lambda or net/http middleware             | [Link](#middleware) |
 | `models`     | Domain models                             | [Link](#models)     |
 | `services`   | Domain services containing business logic | [Link](#services)   |
