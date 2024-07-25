@@ -96,7 +96,7 @@ Application packages contain all of our application code and live under `interna
 
 ### `internal`
 
-The internal layout has very little changes between each scaffold.
+The internal layout is mostly static between each scaffold. Internal contains the packages that implementing our application logic.
 
 ```
 .
@@ -127,7 +127,7 @@ Each scaffold has common packages it implements, the details of which can be fou
 
 ### `config`
 
-config contains a struct declaring all application config, as well as a function for loading config from environment variables.
+config contains all application config as well as a function for loading config from environment variables.
 
 ### `database`
 
@@ -197,23 +197,19 @@ middleware contains common middleware functions. Middleware style will differ be
 
 models contains domain models for the application.
 
-We recommend making models plain Go structs to keep them as flexible as possible. Struct tags can be a way to attach metadata for operations such as marshing data to a database row.
+We recommend writing models as plain structs to keep them light and flexible. Struct tags can used to attach metadata for operations such as marshaling data to a database row.
 
 ### `services`
 
-services contains the core business logic of our application.
+services contains our application services, where the core business logic of our application is defined.
 
 We recommend defining services as structs. Defining services as structs allows us to share common dependencies such as database connections across methods.
 
-We highly recommend only defining structs in the service layer and avoiding the temptation to define and export interfaces. Interfaces in Go are more often used at point of consumption. This follows the "accept interfaces return structs" idiom for Go.
+We strongly advise against exporting interfaces for your services from this package. Interfaces in Go are more often used at point of consumption. This follows the "accept interfaces return structs" idiom for Go.
 
 ### `testutil`
 
 testutil contains common testing utilities for marshaling and unmarshaling data and performing asserts.
-
-### Diagrams
-
-TODO
 
 ## Architecture Goals
 
@@ -223,13 +219,13 @@ The following goals underpin many of the decisions for these templates, and help
 
 This architecture follows idomatic Go practices, such as favoring simple and obvious code, embracing small and private interfaces, minimizing abstractions and indirection, developing well named packages, developing code for tesability, and focusing on functionality first.
 
-### Simplicity
+### Simple
 
 This architecture strives to be as simple as possible, but no simpler. Go is a brutalist and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
 
 This architecture strikes a balance between extremely lean and flat architectures that are becoming more popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
 
-### Glanceability
+### Glancable
 
 Glanceability means "how easy is to get information at a glance". This architecture strives to be highly glanceable. Packages are well named and flat, file names all follow the same conventions, and code is organized in a way to get the high level details near the top of a file, followed by more specific implementation details.
 
@@ -242,15 +238,15 @@ A few examples of glanceability at work.
 - Within `internal/handlers` we can see all the operations a service supports based on file names alone.
 - Within `internal/config` we can find all the configuration our service needs.
 
-### Scaleability
+### Scalable
 
-Scaleability refers to the ability to scale the architecture up or down depending on the needs of the project. We've worked to provide sane starting templates that will conform to the vast majority of projects we'll be developing.
+Being scalable refers to the ability to scale the architecture up or down depending on the needs of the project. We've worked to provide a strong architecture that will conform to the vast majority of projects we'll be developing.
 
 This architecture can be scaled to extreme levels, either down to a flat architecture for a simple project, or up to meet the needs of a larger and more complex product.
 
 We recommend using an architecture that works best for the environment you're in, which often means starting with a middle ground approach like this until there is enough data to push in another direction.
 
-### Maintainability
+### Maintainable
 
 Developing a solution is only the first step. Software must also be maintained and extended over time. As noted above, the architecture present in these templates favors simplicity, which in turn helps with maintainability.
 
