@@ -230,6 +230,14 @@ We strongly advise against exporting interfaces for your services from this pack
 
 testutil contains common testing utilities for marshaling and unmarshaling data and performing asserts.
 
+### `routes` (API Only)
+
+Routes contains logic for routing incoming HTTP requests to the correct handler. This is API specific.
+
+### `swagger`(API Only)
+
+This folder contains code related to swagger generation. This is API specific.
+
 ## Architecture Goals
 
 The following goals underpin many of the decisions for these templates, and help drive architectural decisions. These goals are in no particular order.
