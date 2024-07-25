@@ -185,7 +185,9 @@ type userCreator interface {
   CreateUser(name string) (models.User, error)
 }
 
-func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
+type APIGatewayHandler = func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
+
+func HandleCreateUser(logger *slog.Logger, service userCreator) APIGatewayHandler {
   return func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
     // unmarshal, validate, call service method ...
     return &events.APIGatewayProxyResponse{}, nil
