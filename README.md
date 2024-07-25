@@ -2,6 +2,48 @@
 
 A collection of service templates for Go. Examples include both microservice and serverless architectures.
 
+#### ymmv
+
+The provided projects use an architecture that strikes a balance between heavy enterprise architecture approaches and extremely lean approaches. By providing enough structure and guardrails to push developers towards the pit of success, without being so opinionated that you become painted into a corner and get stuck writing endless boilerplate code.
+
+It's important to realize that architecture is about addressing organizational challenges as much as technical challenges. We believe these templates will provide a comprehensive starting point for most projects but you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
+
+## Table of contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+  - [Executables](#executables)
+  - [Application Packages](#application-packages)
+- [Project Structure](#project-structure)
+- [Packages](#packages)
+- [Architecture Goals](#architecture-goals)
+- [Architecture Decisions](#architecture-decisions)
+  - [Flat Packages](#flat-packages)
+  - [`cmd` & `internal`](#cmd--internal)
+
+## Features
+
+Each template in this repo is a fully deployable application and has the following features.
+
+- Utilizes idiomatic Go and Industry best practices
+  - Limited and judicious use of 3rd party libraries
+  - Proper error handling
+- Includes resources for the full lifecycle:
+  - Local setup instructions
+  - Testing
+  - Infrastructure as code
+  - CI/CD Pipeline
+- Boilerplate code for common needs including but not limited to:
+  - Logging
+  - Database connections
+  - Data validation and mapping for request and response models
+  - Fully functional handlers
+  - Basic service layer
+  - Middleware
+  - Graceful shutdown
+  - Table-driven unit tests
+  - E2E Integration tests
+
 ## Architecture
 
 The templates in this repo use a simple layered architecture. Executables are located under the `cmd` directory, and application code is located in packages under `internal`.
@@ -19,7 +61,7 @@ Each executable under `cmd` is structured as a folder with the name of the execu
 
 The makeup of `cmd` depends on the deployment style. For a mono-lambda deployment a single `cmd/lambda` executable can be found. For the multi lambda deployment an executable will be defined per function (`cmd/list`, `cmd/update`).
 
-### Application packages
+### Application Packages
 
 Application packages contain all of our application code and live under `internal`. This prevents outside applications and libraries from importing our application code, keeping our implementation details private.
 
@@ -33,7 +75,7 @@ Application packages contain all of our application code and live under `interna
 | `services`   | Domain services containing business logic | [Link](#services)   |
 | `testutil`   | Common test utilities                     | [Link](#testutil)   |
 
-## Project structure
+## Project Structure
 
 ### `cmd`
 
@@ -102,9 +144,9 @@ database contains standardized logic for connecting to a database and pinging th
 
 ### `handlers`
 
-handlers contains handler functions. The style of handlers will depend on the service type. A Lambda service will have [Lambda style handlers](https://docs.aws.amazon.com/lambda/latest/dg/golang-handler.html#golang-handler-signatures), a RESTful microservice will have [net/http style handlers](https://pkg.go.dev/net/http#Handler).
+handlers contains handler functions. The style of handlers will depend on the service type. A Lambda service will have [Lambda style handlers](https://docs.aws.amazon.com/lambda/latest/dg/golang-handler.html#golang-handler-signatures), an HTTP service will have [net/http style handlers](https://pkg.go.dev/net/http#Handler).
 
-We recommend writing handlers as closures, which allows dependencies to be passed in without the additional weight of defining a struct and method. This works especially well for handlers as they typically do not have many dependencies, and writing a closure is a very succinct way to supply dependencies.
+We recommend writing handlers as closures, which allows dependencies to be passed without the additional boilerplate of defining a struct and method. This works especially well as handlers typically do not have many dependencies, and writing a closure is a very succinct way to supply dependencies.
 
 #### HTTP Handler Example
 
@@ -158,7 +200,7 @@ func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
 
 ### `middleware`
 
-middleware contains common middleware functions. Middleware style will differ between Lambda and Microservice deplyoment targets.
+middleware contains common middleware functions. Middleware style will differ between Lambda and HTTP services.
 
 ### `models`
 
@@ -188,38 +230,34 @@ The following goals underpin many of the decisions for these templates, and help
 
 ### Idiomatic
 
-This architecture follows idomatic Go practices, such as favoring simple and obvious code, embracing small and private interfaces, minimizing abstractions and indirection, developing well named packages, and keeping our both our package surface and API surface clean and free of clutter.
+This architecture follows idomatic Go practices, such as favoring simple and obvious code, embracing small and private interfaces, minimizing abstractions and indirection, developing well named packages, developing code for tesability, and focusing on functionality first.
 
 ### Simplicity
 
 This architecture strives to be as simple as possible, but no simpler. Go is a brutalist and spartan language. Development in Go favors simple and obvious code, not abstractions, frameworks, or large enterprise style architectures.
 
-The project templates in this repo all follow a simple layered architecture, with a `cmd` folder representing executables, and an `internal` folder holding the application packages. More details on the architecture can be found below.
-
-This architecture strikes a balance between the extremely lean and flat architectures that are becoming more popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
+This architecture strikes a balance between extremely lean and flat architectures that are becoming more popular in the Go community, and architectures that are more familiar to engineers coming from other languages. This balance is struck without compromising on idomatic Go practices.
 
 ### Glanceability
 
-When we say glanceability what we mean is "how easy is to get information at a glance". This architecture strives to be highly glanceable. Packages are well named and flat, file names all follow the same conventions, and code is organized in a way to get the high level details near the top of a file, followed by more specific implementation details.
+Glanceability means "how easy is to get information at a glance". This architecture strives to be highly glanceable. Packages are well named and flat, file names all follow the same conventions, and code is organized in a way to get the high level details near the top of a file, followed by more specific implementation details.
 
 A few examples of glanceability at work.
 
-- Within the `internal/handlers` package its clear to see which handlers have tests and which do not, simply by the presence or absence of an `_test.go` file.
-- Looking in `cmd` in the `lambda` and `mono_lambda` scaffolds we can immediately see how our application is deployed.
-  - Under `cmd` in `lambda` we can see the executables representing our individual lambda functions.
-  - Under `cmd` in `mono_lambda` we can see that the scaffold contains a single monolithic executable for the entire application.
-- Within the `internal/handlers` package we can see a collection of all the operations a service supports.
-- All of our application config is located in a single `internal/config` package, which gives us context to the full set of environment variables and configuration needed to run the service.
+- Within `internal/handlers` its clear to see which handlers have tests and which do not, simply by the presence or absence of a `_test.go` file.
+- The `cmd` folder makes it obvious how many executables a service contains.
+  - `cmd` in `multi-lambda` contains multiple executables, one per lambda functions.
+  - `cmd` in `mono-lambda` contains a single executable.
+- Within `internal/handlers` we can see all the operations a service supports based on file names alone.
+- Within `internal/config` we can find all the configuration our service needs.
 
 ### Scaleability
 
-For these templates, scaleability refers to the ability to scale the architecture up or down depending on the needs of the project. We've worked to provide sane starting templates, that will conform to the vast majority of projects we'll be developing.
+Scaleability refers to the ability to scale the architecture up or down depending on the needs of the project. We've worked to provide sane starting templates that will conform to the vast majority of projects we'll be developing.
 
-This architecture could also be scaled to extreme levels, such as slimming down to a completely flat architecture (everything in package main), or pushing for higher degrees of structure and package hierarchy.
+This architecture can be scaled to extreme levels, either down to a flat architecture for a simple project, or up to meet the needs of a larger and more complex product.
 
-The provided architecture strikes a balance between those two extremes, by providing enough structure and guardrails to push developers towards the pit of success, without being so opinionated that you become painted into a corner or are stuck writing endless amounts of boilerplate code.
-
-It's important to realize that architecture is about solving organizational challenges more than technical ones, and while we believe these templates will provide a starting point for most projects, you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
+We recommend using an architecture that works best for the environment you're in, which often means starting with a middle ground approach like this until there is enough data to push in another direction.
 
 ### Maintainability
 
@@ -229,9 +267,9 @@ Because our packages are flat, and we have just a few layers in our architecture
 
 A simpler solution also means there are less corners for bugs to hide in, helping the overall maintenance burden.
 
-## Decisions
+## Architecture Decisions
 
-### Flat packages
+### Flat Packages
 
 Application packages declared under `internal` are flat. There are no nested packages.
 
@@ -242,25 +280,3 @@ This keeps code more obvious and clear. Nested packages quickly add additional m
 The choice to use `cmd` to represent application binaries, and `internal` to hold application packages was made in accordance with the Go community's recommendations for module organization. Specifically recommendations for organizing modules that represent deployable artifacts.
 
 [Recommendations on Module Organization](https://go.dev/doc/modules/layout#server-project)
-
-## Scaffold Features
-
-- Utilize idiomatic Go and Industry best practices
-  - Limited and judicious use of 3rd party libraries
-  - propper error handling
-- Include resources for the full lifecycle:
-  - Local setup instructions
-  - Testing
-  - Infrastructure as code
-  - CI/CD Pipeline
-- Boilerplate code for common needs including but not limited to:
-  - Logging
-  - Telemetry
-  - Database connections
-  - Data validation and mapping for request and response models
-  - Fully functional handlers
-  - Basic service layer
-  - Middleware
-  - Graceful shutdown
-  - Table-driven unit tests
-  - E2E Integration tests
