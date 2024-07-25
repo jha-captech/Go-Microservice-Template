@@ -23,8 +23,6 @@ The makeup of `cmd` depends on the deployment style. For a mono-lambda deploymen
 
 Application packages contain all of our application code and live under `internal`. This prevents outside applications and libraries from importing our application code, keeping our implementation details private.
 
-## Pacakges
-
 | Package      | Description                               | Link                |
 | ------------ | ----------------------------------------- | ------------------- |
 | `config`     | Configuration definition and loading      | [Link](#config)     |
@@ -35,13 +33,7 @@ Application packages contain all of our application code and live under `interna
 | `services`   | Domain services containing business logic | [Link](#services)   |
 | `testutil`   | Common test utilities                     | [Link](#testutil)   |
 
-More on architecture [goals](#architecture-goals), [project structure](#project-structure), and [architecture decision](#decisions) can be found below.
-
 ## Project structure
-
-The scaffolds in this repo follow a similar layout, with executable placed under `cmd`, and application code placed in packages under `internal`.
-
-A description of common packages can be found [below](#common-packages).
 
 ### `cmd`
 
