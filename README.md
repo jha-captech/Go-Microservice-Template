@@ -101,7 +101,7 @@ Application packages contain all of our application code and live under `interna
 
 ### `internal`
 
-The internal layout is mostly static between each scaffold. Internal contains the packages that implementing our application logic.
+The internal layout is mostly static between each scaffold. Internal contains the packages that implement our application logic.
 
 ```
 .
