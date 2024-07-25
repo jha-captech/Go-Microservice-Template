@@ -43,10 +43,10 @@ Each template in this repo is a fully deployable application and has the followi
 
 ## Templates
 
-| Template       | Description                                                            | Link                              |
-| -------------- | ---------------------------------------------------------------------- | --------------------------------- |
-| `multi-lambda` | A microservice comprised of multiple lambda functions. _**Preferred**_ | [Link](./scaffolds/multi-lambda/) |
-| `mono-lambda`  | A microservice comprised of a single monolithic lambda function.       | [Link](./scaffolds/mono-lambda/)  |
+| Template       | Description                                                            | Link                                                                             |
+| -------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `multi-lambda` | A microservice comprised of multiple lambda functions. _**Preferred**_ | [Link](./scaffolds/multi-lambda/README.md#go-aws-lambda-template---multi-lambda) |
+| `mono-lambda`  | A microservice comprised of a single monolithic lambda function.       | [Link](./scaffolds/mono-lambda/README.md#go-aws-lambda-template---mono-lambda)   |
 
 ## Architecture
 
