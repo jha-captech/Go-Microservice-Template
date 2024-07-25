@@ -2,12 +2,6 @@
 
 A collection of service templates for Go. Examples include both microservice and serverless architectures.
 
-#### ymmv
-
-The provided projects use an architecture that strikes a balance between heavy enterprise architecture approaches and extremely lean approaches. By providing enough structure and guardrails to push developers towards the pit of success, without being so opinionated that you become painted into a corner and get stuck writing endless boilerplate code.
-
-It's important to realize that architecture is about addressing organizational challenges as much as technical challenges. We believe these templates will provide a comprehensive starting point for most projects but you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
-
 ## Table of contents
 
 - [Features](#features)
@@ -21,6 +15,7 @@ It's important to realize that architecture is about addressing organizational c
   - [Flat Packages](#flat-packages)
   - [`cmd` & `internal`](#cmd--internal)
 - [Architecture Diagrams](#architecture-diagrams)
+- [References](#references)
 
 ## Features
 
@@ -289,3 +284,16 @@ The choice to use `cmd` to represent application binaries, and `internal` to hol
 ### Multi Lambda
 
 ![multi lambda system architecture](./scaffolds/multi-lambda/diagrams/Go%20Microservice%20Arch-Multi%20Lambda.drawio.svg)
+
+## References
+
+- [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments)
+  - Great general guidance for writing Go applications.
+- [Organizing a Go Module](https://go.dev/doc/modules/layout)
+  - Great guidance for various ways to organize modules.
+- [How I write HTTP services in Go after 13 years](https://grafana.com/blog/2024/02/09/how-i-write-http-services-in-go-after-13-years/)
+  - Great tips and tricks for writing HTTP services. Matt Ryer falls in the lean and minimal Go camp, and some of his patterns may be too advanced for larger and less mature teams.
+
+The provided projects use an architecture that strikes a balance between heavy enterprise architecture approaches and extremely lean approaches. By providing enough structure and guardrails to push developers towards the pit of success, without being so opinionated that you become painted into a corner and get stuck writing endless boilerplate code.
+
+It's important to realize that architecture is about addressing organizational challenges as much as technical challenges. We believe these templates will provide a comprehensive starting point for most projects but you may need modifications depending on your project's circumstances. If ever in doubt, reach out to the maintainers of this repo, or members of the Go COP and have the discussion.
