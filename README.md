@@ -78,7 +78,7 @@ Application packages contain all of our application code and live under `interna
 ```
 .
 └── cmd/
-    └── lambda/
+    └── api/
         └── main.go               # Monolithic application entrypoint
 ```
 
@@ -89,12 +89,9 @@ Application packages contain all of our application code and live under `interna
 └── cmd/
     ├── create_user/
     │   └── main.go               # Create user lambda entrypoint
-    ├── read_user/
-    │   └── main.go               # Read user lambda entrypoint
     ├── update_user/
     │   └── main.go               # Update user lambda entrypoint
-    └── delete_user/
-        └── main.go               # Delete user lambda entrypoint
+    └── ...
 ```
 
 ### `internal`
