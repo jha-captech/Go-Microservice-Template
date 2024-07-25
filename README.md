@@ -10,13 +10,22 @@ The templates in this repo use a simple layered architecture. Executables are lo
 
 Each executable under `cmd` is structured as a folder with the name of the executable, containing a single `main.go` file. This file has no logic outside of initializing dependencies and starting the runtime (Lambda, or an HTTP server).
 
-The makeup of the `cmd` directory depends on the deployment style. For a mono-lambda deployment a single `cmd/lambda` executable can be found. For the multi lambda deployment an executable will be defined per function (`cmd/list`, `cmd/update`).
+```
+.
+└── cmd/
+    └── lambda/
+        └── main.go
+```
+
+The makeup of `cmd` depends on the deployment style. For a mono-lambda deployment a single `cmd/lambda` executable can be found. For the multi lambda deployment an executable will be defined per function (`cmd/list`, `cmd/update`).
 
 ### Application packages
 
-Application packages are placed under `internal` to encapsulate service details (modules outside of the one we're developing are unable to import any packages we define under `internal`). This has the benefit of keeping our service implementation private from other services.
+Application packages contain all of our application code and live under `internal`. This prevents outside applications and libraries from importing our application code, keeping our implementation details private.
 
-| package      | description                               | Link                |
+## Pacakges
+
+| Package      | Description                               | Link                |
 | ------------ | ----------------------------------------- | ------------------- |
 | `config`     | Configuration definition and loading      | [Link](#config)     |
 | `database`   | Database connection with retry logic      | [Link](#database)   |
