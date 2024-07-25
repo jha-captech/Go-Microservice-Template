@@ -2,6 +2,15 @@
 
 ## Instruction
 
+### Setup
+
+Required dependencies:
+
+- Go 1.22+
+- Docker
+- Docker-Compose
+- AWS SAM CLI
+
 ### Run
 
 #### SAM Local API
