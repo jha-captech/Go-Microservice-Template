@@ -63,7 +63,6 @@ func run(ctx context.Context) error {
 	handler = middleware.AddToHandler(
 		handler,
 		middleware.Recovery(logger),
-		middleware.Recovery(logger),
 	)
 
 	lambda.Start(handler)

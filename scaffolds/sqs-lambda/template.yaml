@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Sample GoLand Lambda
+Description: Sample GoLang Lambda
 
 Globals:
   Function:
@@ -10,11 +10,12 @@ Globals:
       LogFormat: JSON
 
 Resources:
-  UserMicroservice:
+  UserMicroserviceCreate:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: go1.x
     Properties:
+      CodeUri: cmd/lambda/
       Handler: bootstrap
       Runtime: provided.al2
       Architectures:
@@ -30,15 +31,3 @@ Resources:
           DATABASE_HOST: !Ref DATABASE_HOST
           DATABASE_PORT: !Ref DATABASE_PORT
           DATABASE_RETRY_DURATION_SECONDS: !Ref DATABASE_RETRY_DURATION_SECONDS
-      CodeUri: cmd/lambda/
-      Events:
-        ListUser:
-          Type: Api
-          Properties:
-            Path: /lambda/user
-            Method: GET
-        UpdateUser:
-          Type: Api
-          Properties:
-            Path: /lambda/user/{ID}
-            Method: PUT

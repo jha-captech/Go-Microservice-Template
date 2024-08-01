@@ -16,7 +16,7 @@ Required dependencies:
 #### API
 
 ```zsh
-make api
+make lambda
 ```
 
 ## Architecture
