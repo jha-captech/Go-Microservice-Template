@@ -27,20 +27,17 @@ Each template in this repo is a fully deployable application and has the followi
     - Limited and judicious use of 3rd party libraries
     - Proper error handling
 - Includes resources for the full lifecycle:
-    - Local setup instructions
-    - Testing
-    - Infrastructure as code
-    - CI/CD Pipeline
+  - Local setup instructions
+  - Testing
+  - Infrastructure as code
 - Boilerplate code for common needs including but not limited to:
-    - Logging
-    - Database connections
-    - Data validation and mapping for request and response models
-    - Fully functional handlers
-    - Basic service layer
-    - Middleware
-    - Graceful shutdown
-    - Table-driven unit tests
-    - E2E Integration tests
+  - Logging
+  - Database connections
+  - Data validation and mapping for request and response models
+  - Fully functional handlers
+  - Basic service layer
+  - Middleware
+  - Table-driven unit tests
 
 ## Templates
 
@@ -121,8 +118,7 @@ details private.
 
 ### `internal`
 
-The internal layout is mostly static between each scaffold. Internal contains the packages that
-implementing our application logic.
+The internal layout is mostly static between each scaffold. Internal contains the packages that implement our application logic.
 
 ```
 .
@@ -150,6 +146,8 @@ implementing our application logic.
 ## Packages
 
 Each scaffold has common packages it implements, the details of which can be found below.
+
+_Note_ In a larger system, it's likely these packages would be split out into reusable libraries that all teams can leverage. This begins to enforce standards and consistency for things like logging, configuration, database access, etc.
 
 ### `config`
 
@@ -214,11 +212,14 @@ type userCreator interface {
 	CreateUser(name string) (models.User, error)
 }
 
-func HandleCreateUser(logger *slog.Logger, service userCreator) http.Handler {
-	return func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-		// unmarshal, validate, call service method ...
-		return &events.APIGatewayProxyResponse{}, nil
-	}
+
+type APIGatewayHandler = func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
+
+func HandleCreateUser(logger *slog.Logger, service userCreator) APIGatewayHandler {
+  return func(ctx context.Context, event events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+    // unmarshal, validate, call service method ...
+    return &events.APIGatewayProxyResponse{}, nil
+  }
 }
 
 ```
