@@ -16,7 +16,7 @@ func RunSwagger(r *chi.Mux, logger *httplog.Logger, host string) {
 	docs.SwaggerInfo.Version = "1.0"
 
 	docs.SwaggerInfo.Host = host
-	docs.SwaggerInfo.BasePath = "/api"
+	docs.SwaggerInfo.BasePath = "/lambda"
 
 	docs.SwaggerInfo.Schemes = []string{"http"}
 

@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY .. .
-RUN go build -o ./app ./cmd/api/.
+RUN go build -o ./app ./cmd/lambda/.
 
 FROM alpine:3.19 AS publish
 

@@ -30,9 +30,9 @@ func RegisterRoutes(router *chi.Mux, logger *httplog.Logger, svs *services.UserS
 	}
 
 	if options.registerHealthRoute {
-		router.Get("/api/health-check", handlers.HandleHealth(logger))
+		router.Get("/lambda/health-check", handlers.HandleHealth(logger))
 	}
 
-	router.Get("/api/user", handlers.HandleListUsers(logger, svs))
-	router.Put("/api/user/{ID}", handlers.HandleUpdateUser(logger, svs))
+	router.Get("/lambda/user", handlers.HandleListUsers(logger, svs))
+	router.Put("/lambda/user/{ID}", handlers.HandleUpdateUser(logger, svs))
 }
