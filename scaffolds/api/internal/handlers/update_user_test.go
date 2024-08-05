@@ -80,7 +80,7 @@ func TestHandleUpdateUser(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			req, err := http.NewRequest(http.MethodPut, "/api/user/"+tc.requestIDParam, strings.NewReader(tc.requestBody))
+			req, err := http.NewRequest(http.MethodPut, "/lambda/user/"+tc.requestIDParam, strings.NewReader(tc.requestBody))
 			assert.NoError(t, err)
 
 			// Add chi URLParam

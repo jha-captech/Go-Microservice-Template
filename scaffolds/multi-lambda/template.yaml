@@ -35,7 +35,7 @@ Resources:
         ListUser:
           Type: Api
           Properties:
-            Path: /api/user
+            Path: /lambda/user
             Method: GET
   UpdateUser:
     Type: AWS::Serverless::Function
@@ -62,5 +62,5 @@ Resources:
         UpdateUser:
           Type: Api
           Properties:
-            Path: /api/user/{ID}
+            Path: /lambda/user/{ID}
             Method: PUT
