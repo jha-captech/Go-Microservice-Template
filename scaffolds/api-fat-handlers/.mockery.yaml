@@ -1,0 +1,12 @@
+with-expecter: true
+packages:
+  github.com/captechconsulting/go-microservice-templates/api/internal/handlers:
+    config:
+      filename: "{{.InterfaceName | snakecase }}.go"
+      dir: "{{.InterfaceDir}}/mock"
+      mockname: "Mock{{.InterfaceName | camelcase | firstUpper }}"
+      outpkg: "mock"
+      inpackage: false
+    interfaces:
+      userLister:
+      userUpdater:

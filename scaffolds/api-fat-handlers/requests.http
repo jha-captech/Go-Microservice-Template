@@ -1,0 +1,17 @@
+### health check
+GET http://0.0.0.0:8080/api/health-check
+
+### list users
+GET http://0.0.0.0:8080/api/user
+
+### Update a user by ID
+PUT http://0.0.0.0:8080/api/user/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "first_name": "Johnny",
+  "last_name": "Doe",
+  "role": "Customer",
+  "user_id": 1001
+}
