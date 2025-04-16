@@ -1,8 +1,8 @@
-template: testify
-filename: "{{.InterfaceName | snakecase }}.go"
-dir: "{{.InterfaceDir}}/mocks"
-pkgname: mocks
-structname: "Mock{{.InterfaceName | camelcase | firstUpper }}"
+template: matryer
+dir: "{{.InterfaceDir}}"
+filename: "mocks.go"
+pkgname: "handlers"
+structname: "moq{{.InterfaceName | camelcase | firstUpper }}"
 packages:
   github.com/captechconsulting/go-microservice-templates/api/internal/handlers:
     interfaces:

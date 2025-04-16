@@ -9,13 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/captechconsulting/go-microservice-templates/api/internal/handlers/mocks"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/models"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/testutil"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/httplog/v2"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestHandleUpdateUser(t *testing.T) {
@@ -24,9 +22,9 @@ func TestHandleUpdateUser(t *testing.T) {
 	userOut := mapOutput(user)
 
 	type mockArgs struct {
-		mockCalled bool
-		mockInput  []any
-		mockOutput []any
+		mockCalledCount int
+		mockOutput1     models.User
+		mockOutput2     error
 	}
 
 	tests := map[string]struct {
@@ -38,9 +36,9 @@ func TestHandleUpdateUser(t *testing.T) {
 	}{
 		"valid request, user updated": {
 			mockArgs: mockArgs{
-				mockCalled: true,
-				mockInput:  []any{mock.Anything, 1, user},
-				mockOutput: []any{user, nil},
+				mockCalledCount: 1,
+				mockOutput1:     user,
+				mockOutput2:     nil,
 			},
 			requestIDParam: "1",
 			requestBody:    testutil.ToJSONString(userIn),
@@ -49,9 +47,7 @@ func TestHandleUpdateUser(t *testing.T) {
 		},
 		"invalid request body": {
 			mockArgs: mockArgs{
-				mockCalled: false,
-				mockInput:  nil,
-				mockOutput: nil,
+				mockCalledCount: 0,
 			},
 			requestIDParam: "1",
 			requestBody:    `{"first_name":"John","role":"Admin"}`,
@@ -75,9 +71,9 @@ func TestHandleUpdateUser(t *testing.T) {
 		},
 		"error creating user": {
 			mockArgs: mockArgs{
-				mockCalled: true,
-				mockInput:  []any{mock.Anything, 1, user},
-				mockOutput: []any{models.User{}, errors.New("creation error")},
+				mockCalledCount: 1,
+				mockOutput1:     models.User{},
+				mockOutput2:     errors.New("some error"),
 			},
 			requestIDParam: "1",
 			requestBody:    testutil.ToJSONString(userIn),
@@ -89,7 +85,13 @@ func TestHandleUpdateUser(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			// setup
-			mockService := new(mocks.MockUserUpdater)
+			mockService := new(moqUserUpdater)
+			if tc.mockArgs.mockCalledCount > 0 {
+				mockService.UpdateUserFunc = func(ctx context.Context, ID int, user models.User) (models.User, error) {
+					return tc.mockArgs.mockOutput1, tc.mockArgs.mockOutput2
+				}
+			}
+
 			logger := httplog.NewLogger("test", httplog.Options{Writer: io.Discard})
 			handler := HandleUpdateUser(logger, mockService)
 
@@ -102,24 +104,12 @@ func TestHandleUpdateUser(t *testing.T) {
 			ctx := context.WithValue(req.Context(), chi.RouteCtxKey, rctx)
 			req = req.WithContext(ctx)
 
-			if tc.mockArgs.mockCalled {
-				mockService.
-					On("UpdateUser", tc.mockArgs.mockInput...).
-					Return(tc.mockArgs.mockOutput...).
-					Once()
-			}
-
 			rr := httptest.NewRecorder()
 			handler.ServeHTTP(rr, req)
 
 			assert.Equal(t, tc.expectedCode, rr.Code, "Wrong code received")
 			assert.JSONEq(t, tc.expectedBody, rr.Body.String(), "Wrong response body")
-
-			if tc.mockArgs.mockCalled {
-				mockService.AssertExpectations(t)
-			} else {
-				mockService.AssertNotCalled(t, "UpdateUser")
-			}
+			assert.Equal(t, tc.mockArgs.mockCalledCount, len(mockService.UpdateUserCalls()))
 		})
 	}
 }
