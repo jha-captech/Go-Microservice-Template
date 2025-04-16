@@ -3,50 +3,56 @@ package handlers
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	serviceMock "github.com/captechconsulting/go-microservice-templates/api/internal/handlers/mock"
+	"github.com/captechconsulting/go-microservice-templates/api/internal/handlers/mocks"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/models"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/testutil"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/httplog/v2"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestHandleUpdateUser(t *testing.T) {
-	mockService := new(serviceMock.MockUserUpdater)
-	logger := httplog.NewLogger("test")
-	handler := HandleUpdateUser(logger, mockService)
-
 	user := models.User{FirstName: "John", LastName: "Doe", Role: "Customer", UserID: 1001}
 	userIn := inputUser{FirstName: "John", LastName: "Doe", Role: "Customer", UserID: 1001}
 	userOut := mapOutput(user)
 
+	type mockArgs struct {
+		mockCalled bool
+		mockInput  []any
+		mockOutput []any
+	}
+
 	tests := map[string]struct {
-		mockCalled     bool
-		mockInput      []any
-		mockOutput     []any
+		mockArgs       mockArgs
 		requestIDParam string
 		requestBody    string
 		expectedCode   int
 		expectedBody   string
 	}{
 		"valid request, user updated": {
-			mockCalled:     true,
-			mockInput:      []any{1, user},
-			mockOutput:     []any{user, nil},
+			mockArgs: mockArgs{
+				mockCalled: true,
+				mockInput:  []any{mock.Anything, 1, user},
+				mockOutput: []any{user, nil},
+			},
 			requestIDParam: "1",
 			requestBody:    testutil.ToJSONString(userIn),
 			expectedCode:   http.StatusOK,
 			expectedBody:   testutil.ToJSONString(responseUser{User: userOut}),
 		},
 		"invalid request body": {
-			mockCalled:     false,
-			mockInput:      nil,
-			mockOutput:     nil,
+			mockArgs: mockArgs{
+				mockCalled: false,
+				mockInput:  nil,
+				mockOutput: nil,
+			},
 			requestIDParam: "1",
 			requestBody:    `{"first_name":"John","role":"Admin"}`,
 			expectedCode:   http.StatusBadRequest,
@@ -68,9 +74,11 @@ func TestHandleUpdateUser(t *testing.T) {
 			}),
 		},
 		"error creating user": {
-			mockCalled:     true,
-			mockInput:      []any{1, user},
-			mockOutput:     []any{models.User{}, errors.New("creation error")},
+			mockArgs: mockArgs{
+				mockCalled: true,
+				mockInput:  []any{mock.Anything, 1, user},
+				mockOutput: []any{models.User{}, errors.New("creation error")},
+			},
 			requestIDParam: "1",
 			requestBody:    testutil.ToJSONString(userIn),
 			expectedCode:   http.StatusInternalServerError,
@@ -80,6 +88,11 @@ func TestHandleUpdateUser(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
+			// setup
+			mockService := new(mocks.MockUserUpdater)
+			logger := httplog.NewLogger("test", httplog.Options{Writer: io.Discard})
+			handler := HandleUpdateUser(logger, mockService)
+
 			req, err := http.NewRequest(http.MethodPut, "/lambda/user/"+tc.requestIDParam, strings.NewReader(tc.requestBody))
 			assert.NoError(t, err)
 
@@ -89,10 +102,10 @@ func TestHandleUpdateUser(t *testing.T) {
 			ctx := context.WithValue(req.Context(), chi.RouteCtxKey, rctx)
 			req = req.WithContext(ctx)
 
-			if tc.mockCalled {
+			if tc.mockArgs.mockCalled {
 				mockService.
-					On("UpdateUser", append([]any{ctx}, tc.mockInput...)...).
-					Return(tc.mockOutput...).
+					On("UpdateUser", tc.mockArgs.mockInput...).
+					Return(tc.mockArgs.mockOutput...).
 					Once()
 			}
 
@@ -102,7 +115,7 @@ func TestHandleUpdateUser(t *testing.T) {
 			assert.Equal(t, tc.expectedCode, rr.Code, "Wrong code received")
 			assert.JSONEq(t, tc.expectedBody, rr.Body.String(), "Wrong response body")
 
-			if tc.mockCalled {
+			if tc.mockArgs.mockCalled {
 				mockService.AssertExpectations(t)
 			} else {
 				mockService.AssertNotCalled(t, "UpdateUser")

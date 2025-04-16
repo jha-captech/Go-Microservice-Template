@@ -1,26 +1,22 @@
 package handlers
 
 import (
-	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/captechconsulting/go-microservice-templates/api/internal/handlers/mocks"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/models"
 	"github.com/captechconsulting/go-microservice-templates/api/internal/testutil"
-	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/httplog/v2"
 	"github.com/stretchr/testify/assert"
-
-	serviceMock "github.com/captechconsulting/go-microservice-templates/api/internal/handlers/mock"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHandleListUsers(t *testing.T) {
-	mockService := new(serviceMock.MockUserLister)
-	logger := httplog.NewLogger("test")
-	handler := HandleListUsers(logger, mockService)
-
 	users := []models.User{
 		{ID: 1, FirstName: "John", LastName: "Doe", Role: "Admin", UserID: 1001},
 		{ID: 2, FirstName: "Jane", LastName: "Smith", Role: "User", UserID: 1002},
@@ -28,27 +24,37 @@ func TestHandleListUsers(t *testing.T) {
 
 	usersOut := mapMultipleOutput(users)
 
+	type mockArgs struct {
+		mockCalled bool
+		mockOutput []any
+	}
+
 	tests := map[string]struct {
-		mockCalled   bool
-		mockOutput   []any
+		mockArgs     mockArgs
 		expectedCode int
 		expectedBody string
 	}{
 		"users returned": {
-			mockCalled:   true,
-			mockOutput:   []any{users, nil},
+			mockArgs: mockArgs{
+				mockCalled: true,
+				mockOutput: []any{users, nil},
+			},
 			expectedCode: http.StatusOK,
 			expectedBody: testutil.ToJSONString(responseUsers{Users: usersOut}),
 		},
 		"no users found": {
-			mockCalled:   true,
-			mockOutput:   []any{[]models.User{}, nil},
+			mockArgs: mockArgs{
+				mockCalled: true,
+				mockOutput: []any{[]models.User{}, nil},
+			},
 			expectedCode: http.StatusOK,
 			expectedBody: testutil.ToJSONString(responseUsers{Users: []outputUser{}}),
 		},
 		"internal server error": {
-			mockCalled:   true,
-			mockOutput:   []any{[]models.User{}, errors.New("teat error")},
+			mockArgs: mockArgs{
+				mockCalled: true,
+				mockOutput: []any{[]models.User{}, errors.New("teat error")},
+			},
 			expectedCode: http.StatusInternalServerError,
 			expectedBody: testutil.ToJSONString(responseErr{Error: "Error retrieving data"}),
 		},
@@ -56,28 +62,30 @@ func TestHandleListUsers(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
+			// setup
+			mockService := new(mocks.MockUserLister)
+			logger := httplog.NewLogger("test", httplog.Options{Writer: io.Discard})
+			handler := HandleListUsers(logger, mockService)
+
 			req, err := http.NewRequest(http.MethodGet, "/api/user", nil)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 
-			// Add chi URLParam
-			rctx := chi.NewRouteContext()
-			ctx := context.WithValue(req.Context(), chi.RouteCtxKey, rctx)
-			req = req.WithContext(ctx)
-
-			if tc.mockCalled {
+			if tc.mockArgs.mockCalled {
 				mockService.
-					On("ListUsers", ctx).
-					Return(tc.mockOutput...).
+					On("ListUsers", mock.Anything).
+					Return(tc.mockArgs.mockOutput...).
 					Once()
 			}
 
+			// act
 			rr := httptest.NewRecorder()
 			handler.ServeHTTP(rr, req)
 
+			// assert
 			assert.Equal(t, tc.expectedCode, rr.Code, "Wrong code received")
 			assert.JSONEq(t, tc.expectedBody, rr.Body.String(), "Wrong response body")
 
-			if tc.mockCalled {
+			if tc.mockArgs.mockCalled {
 				mockService.AssertExpectations(t)
 			} else {
 				mockService.AssertNotCalled(t, "ListUsers")
